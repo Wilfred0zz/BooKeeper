@@ -12,47 +12,49 @@ namespace BooKeeper.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PurchasesController : ControllerBase
+    public class PurchaseController : ControllerBase
     {
         private readonly APIDBContext _context;
 
-        public PurchasesController(APIDBContext context)
+        public PurchaseController(APIDBContext context)
         {
             _context = context;
         }
 
-        // GET: api/Purchases
+        // GET: api/Purchase
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Purchases>>> GetPurchases()
+        public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchases()
         {
-            return await _context.Purchases.ToListAsync();
-        }
-
-        // GET: api/Purchases/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Purchases>> GetPurchases(int id)
-        {
-            var purchases = await _context.Purchases.FindAsync(id);
-
-            if (purchases == null)
-            {
-                return NotFound();
-            }
+            var purchases = await _context.Purchases.ToListAsync();
 
             return purchases;
         }
 
-        // PUT: api/Purchases/5
+        // GET: api/Purchase/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Purchase>> GetPurchase(int id)
+        {
+            var purchase = await _context.Purchases.FindAsync(id);
+
+            if (purchase == null)
+            {
+                return NotFound();
+            }
+
+            return purchase;
+        }
+
+        // PUT: api/Purchase/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPurchases(int id, Purchases purchases)
+        public async Task<IActionResult> PutPurchase(int id, Purchase purchase)
         {
-            if (id != purchases.PurchaseId)
+            if (id != purchase.PurchaseId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(purchases).State = EntityState.Modified;
+            _context.Entry(purchase).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +62,7 @@ namespace BooKeeper.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PurchasesExists(id))
+                if (!PurchaseExists(id))
                 {
                     return NotFound();
                 }
@@ -73,34 +75,34 @@ namespace BooKeeper.Controllers
             return NoContent();
         }
 
-        // POST: api/Purchases
+        // POST: api/Purchase
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Purchases>> PostPurchases(Purchases purchases)
+        public async Task<ActionResult<Purchase>> PostPurchase(Purchase purchase)
         {
-            _context.Purchases.Add(purchases);
+            _context.Purchases.Add(purchase);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPurchases", new { id = purchases.PurchaseId }, purchases);
+            return CreatedAtAction("GetPurchase", new { id = purchase.PurchaseId }, purchase);
         }
 
-        // DELETE: api/Purchases/5
+        // DELETE: api/Purchase/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePurchases(int id)
+        public async Task<IActionResult> DeletePurchase(int id)
         {
-            var purchases = await _context.Purchases.FindAsync(id);
-            if (purchases == null)
+            var purchase = await _context.Purchases.FindAsync(id);
+            if (purchase == null)
             {
                 return NotFound();
             }
 
-            _context.Purchases.Remove(purchases);
+            _context.Purchases.Remove(purchase);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool PurchasesExists(int id)
+        private bool PurchaseExists(int id)
         {
             return _context.Purchases.Any(e => e.PurchaseId == id);
         }

@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace BooKeeper.Models
 {
-    public class Books
+    public class Book
     {
-        [Key]
         public int BookId { get; set; }
 
         public String? Title { get; set; }
 
-        public Author? Author {get; set; }
+        public int? AuthorId {get; set; }
 
         public float Price { get; set; }
 

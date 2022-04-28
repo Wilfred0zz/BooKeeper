@@ -18,9 +18,10 @@ namespace BooKeeper.Models
             var connectionString = Configuration.GetConnectionString("BooKeeper");
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
+
         public DbSet<Customer>? Customers { get; set; } = null;
         public DbSet<Author>? Authors { get; set; } = null;
-        public DbSet<Books>? Books { get; set; } = null;
-        public DbSet<Purchases>? Purchases { get; set; } = null;
+        public DbSet<Book>? Books { get; set; } = null;
+        public DbSet<Purchase>? Purchases { get; set; } = null!;
     }
 }

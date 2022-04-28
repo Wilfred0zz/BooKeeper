@@ -23,14 +23,15 @@ namespace BooKeeper.Controllers
 
         // GET: api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Books>>> GetBooks()
+        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
-            return await _context.Books.ToListAsync();
+            var books = await _context.Books.ToListAsync();
+            return books;
         }
 
         // GET: api/Books/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Books>> GetBooks(int id)
+        public async Task<ActionResult<Book>> GetBooks(int id)
         {
             var books = await _context.Books.FindAsync(id);
 
@@ -45,7 +46,7 @@ namespace BooKeeper.Controllers
         // PUT: api/Books/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBooks(int id, Books books)
+        public async Task<IActionResult> PutBooks(int id, Book books)
         {
             if (id != books.BookId)
             {
@@ -76,7 +77,7 @@ namespace BooKeeper.Controllers
         // POST: api/Books
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Books>> PostBooks(Books books)
+        public async Task<ActionResult<Book>> PostBooks(Book books)
         {
             _context.Books.Add(books);
             await _context.SaveChangesAsync();

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace BooKeeper.Models
 {
     public class Customer
@@ -8,7 +10,8 @@ namespace BooKeeper.Models
         public String LastName { get; set; }
 
         public String PhoneNumber { get; set; }
-
+        
         public String Email { get; set; }
+
     }
 }
