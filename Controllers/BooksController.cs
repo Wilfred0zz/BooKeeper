@@ -23,34 +23,64 @@ namespace BooKeeper.Controllers
 
         // GET: api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        public async Task<ActionResult<Response>> GetBooks()
         {
             var books = await _context.Books.ToListAsync();
-            return books;
+            var result = new Response();
+            result.StatusCode = 400;
+            result.StatusDescription = " Cannot fetch list of Books check database if table exists";
+            if (books != null)
+            {
+                result.StatusCode = 200;
+                result.StatusDescription = "Sucess. List of books fetched!";
+
+                foreach (Book bookIt in books)
+                {
+                    result.BookResponse.Add(bookIt);
+                }
+                //return result;
+            }
+            else
+            { result.BookResponse = null; }
+            return result;
         }
 
         // GET: api/Books/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBooks(int id)
+        public async Task<ActionResult<Response>> GetBooks(int id)
         {
             var books = await _context.Books.FindAsync(id);
+            var result = new Response();
+            result.StatusCode = 404;
+            result.StatusDescription = " Cannot find specificed book for ID given. ";
 
-            if (books == null)
+
+            if (books != null)
             {
-                return NotFound();
+                result.StatusCode = 202;
+                result.StatusDescription = "Sucess. List of author info fetched!";
+                result.BookResponse.Add(books);
             }
+            else
+            { result.BookResponse = null; }
 
-            return books;
+
+            return result;
         }
 
         // PUT: api/Books/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBooks(int id, Book books)
+        public async Task<ActionResult<Response>> PutBooks(int id, Book books)
         {
+            var result = new Response();
+            result.StatusCode = 404;
+            result.StatusDescription = " Cannot find specified Book for ID given. ";
+
             if (id != books.BookId)
             {
-                return BadRequest();
+                result.StatusDescription = " ID does not match one in database ";
+                return result;
             }
 
             _context.Entry(books).State = EntityState.Modified;
@@ -58,6 +88,9 @@ namespace BooKeeper.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                result.StatusCode = 200;
+                result.StatusDescription = " Success. Updated information for book of that id. ";
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -71,34 +104,58 @@ namespace BooKeeper.Controllers
                 }
             }
 
-            return NoContent();
+            return result;
         }
 
         // POST: api/Books
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Book>> PostBooks(Book books)
+        public async Task<ActionResult<Response>> PostBooks(Book books)
         {
-            _context.Books.Add(books);
-            await _context.SaveChangesAsync();
+            var result = new Response();
+            result.StatusCode = 401;
+            result.StatusDescription = "Bad Request Cannot Create new book make sure everything is filled out. ";
 
-            return CreatedAtAction("GetBooks", new { id = books.BookId }, books);
+            if (books != null)
+            {
+                _context.Books.Add(books);
+                await _context.SaveChangesAsync();
+                result.StatusCode = 201;
+                result.StatusDescription = "Created. Added a new book to database";
+                result.BookResponse.Add(books);
+            }
+            else
+            {
+                result.BookResponse = null;
+
+            }
+
+            return result;
         }
 
         // DELETE: api/Books/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBooks(int id)
+        public async Task<ActionResult<Response>> DeleteBooks(int id)
         {
             var books = await _context.Books.FindAsync(id);
-            if (books == null)
+            var result = new Response();
+            result.StatusCode = 404;
+            result.StatusDescription = " Cannot find specificed book for ID given. ";
+
+            if (books != null)
             {
-                return NotFound();
+                _context.Books.Remove(books);
+                await _context.SaveChangesAsync();
+                result.StatusCode = 202;
+                result.StatusDescription = "Successfully deleted books of that ID";
+            }
+            else
+            {
+                result.BookResponse = null;
             }
 
-            _context.Books.Remove(books);
-            await _context.SaveChangesAsync();
+            return result;
 
-            return NoContent();
         }
 
         private bool BooksExists(int id)

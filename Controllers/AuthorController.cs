@@ -23,33 +23,67 @@ namespace BooKeeper.Controllers
 
         // GET: api/Author
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
+        public async Task<ActionResult<Response>> GetAuthors()
         {
-            return await _context.Authors.ToListAsync();
+            var author = await _context.Authors.ToListAsync();
+            var result = new Response();
+            result.StatusCode = 400;
+            result.StatusDescription = " Cannot fetch list of Authors check database if table exists";
+            if (author != null)
+            {
+                result.StatusCode = 200;
+                result.StatusDescription = "Sucess. List of authors fetched!";
+
+                foreach (Author authorIt in author)
+                {
+                    result.AuthorResponse.Add(authorIt);
+                }
+                //return result;
+            }
+            else
+            { result.AuthorResponse = null; }
+            return result;
+
+
         }
 
         // GET: api/Author/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetAuthor(int id)
+        public async Task<ActionResult<Response>> GetAuthor(int id)
         {
             var author = await _context.Authors.FindAsync(id);
 
-            if (author == null)
-            {
-                return NotFound();
-            }
+            var result = new Response();
+            result.StatusCode = 404;
+            result.StatusDescription = " Cannot find specificed author for ID given. ";
 
-            return author;
+            if (author != null)
+            {
+                result.StatusCode = 202;
+                result.StatusDescription = "Sucess. List of author info fetched!";
+                result.AuthorResponse.Add(author);
+
+            }
+            else
+            { result.AuthorResponse = null; }
+
+            return result;
         }
 
         // PUT: api/Author/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAuthor(int id, Author author)
+        public async Task<ActionResult<Response>> PutAuthor(int id, Author author)
         {
+            var result = new Response();
+
+            result.StatusCode = 404;
+            result.StatusDescription = " Cannot find specificed author for ID given. ";
+
             if (id != author.AuthorId)
             {
-                return BadRequest();
+                result.StatusDescription = " ID does not match one in database ";
+                return result;
             }
 
             _context.Entry(author).State = EntityState.Modified;
@@ -57,6 +91,9 @@ namespace BooKeeper.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                result.StatusCode = 200;
+                result.StatusDescription = " Success. Updated information for author of that id. ";
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -70,34 +107,59 @@ namespace BooKeeper.Controllers
                 }
             }
 
-            return NoContent();
+            return result;
         }
 
         // POST: api/Author
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Author>> PostAuthor(Author author)
+        public async Task<ActionResult<Response>> PostAuthor(Author author)
         {
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
+            var result = new Response();
+            result.StatusCode = 401;
+            result.StatusDescription = "Bad Request Cannot Create new author make sure everything is filled out. ";
 
-            return CreatedAtAction("GetAuthor", new { id = author.AuthorId }, author);
+            if (author != null)
+            {
+                _context.Authors.Add(author);
+                await _context.SaveChangesAsync();
+                result.StatusCode = 201;
+                result.StatusDescription = "Created. Added a new author to database";
+                result.AuthorResponse.Add(author);
+            }
+            else
+            {
+                result.AuthorResponse = null;
+
+            }
+
+            return result;
         }
 
         // DELETE: api/Author/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAuthor(int id)
+        public async Task<ActionResult<Response>> DeleteAuthor(int id)
         {
+            var result = new Response();
+
             var author = await _context.Authors.FindAsync(id);
-            if (author == null)
+            result.StatusCode = 404;
+            result.StatusDescription = " Cannot find specificed author for ID given. ";
+
+            if (author != null)
             {
-                return NotFound();
+                _context.Authors.Remove(author);
+                await _context.SaveChangesAsync();
+                result.StatusCode = 202;
+                result.StatusDescription = "Successfully deleted author of that ID";
+            }
+            else
+            {
+                result.AuthorResponse = null;
+
             }
 
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return result;
         }
 
         private bool AuthorExists(int id)
