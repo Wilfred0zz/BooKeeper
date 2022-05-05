@@ -56,18 +56,21 @@
 - PUT: api/Books/5 update a certain book
 - POST: api/Books used to add a book 
 - DELETE: api/Books/2 used to delete a book from book store API
+ 
 #### Purchase
 - GET: api/Purchase gets all Purchases in api along with their information
 - GET: api/Purchase/2 gets a Purchase information by its id
 - PUT: api/Purchase/5 update a certain Purchase
 - POST: api/Purchase used to add a Purchase 
 - DELETE: api/Purchase/2 used to delete a Purchase from book store API
+
 #### Customer
 - GET: api/Customer gets all Customers in api along with their information
 - GET: api/Customer/2 gets a Customer information by its id
 - PUT: api/Customer/5 update a certain Customer
 - POST: api/Customer used to add a Customer 
 - DELETE: api/Customer/2 used to delete a Customer from book store API
+
 #### Author
 - GET: api/Author gets all Authors in api along with their information
 - GET: api/Author/2 gets a Author information by its id
