@@ -3,6 +3,7 @@
 ## Description
  This is a book store api where one can see books the authors and customers who have made purchases of the books.
  Please update the appsettings to match the password and user for your local database!!!
+ LMK if you need me to add Database SQL here!
  
  ### Installation/Setup
  Please install the required packages to run API
@@ -67,14 +68,12 @@
 #### Customer
 - GET: api/Customer gets all Customers in api along with their information
 - GET: api/Customer/2 gets a Customer information by its id
-- PUT: api/Customer/5 update a certain Customer
 - POST: api/Customer used to add a Customer 
 - DELETE: api/Customer/2 used to delete a Customer from book store API
 
 #### Author
 - GET: api/Author gets all Authors in api along with their information
 - GET: api/Author/2 gets a Author information by its id
-- PUT: api/Author/5 update a certain Author
 - POST: api/Author used to add a Author 
 - DELETE: api/Author/2 used to delete a Author from book store API
 
